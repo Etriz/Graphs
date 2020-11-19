@@ -85,14 +85,22 @@ class SocialGraph:
         queue = deque()
         queue.append([user_id])
 
-        # while len(queue) > 0:
-        #     path = queue.popleft()
+        while len(queue) > 0:
+            path = queue.popleft()
+            node = path[-1]
+            visited[node] = path
 
-        for friend in self.friendships[user_id]:
-            if visited.get(friend) is None:
-                visited[friend] = [user_id, friend]
-            else:
-                visited[friend].append(friend)
+            for friend in self.friendships[node]:
+                if friend not in visited:
+                    newPath = path.copy()
+                    newPath.append(friend)
+                    queue.append(newPath)
+
+        # for friend in self.friendships[user_id]:
+        #     if visited.get(friend) is None:
+        #         visited[friend] = [user_id, friend]
+        #     else:
+        #         visited[friend].append(friend)
 
         return visited
 
