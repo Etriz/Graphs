@@ -1,3 +1,6 @@
+import random
+
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -53,7 +56,6 @@ class SocialGraph:
             self.add_user(f"user_{num}")
 
         # Create friendships
-        import random
 
         # generate all possible friendships
         possible_friendships = []
@@ -103,6 +105,44 @@ class SocialGraph:
         #         visited[friend].append(friend)
 
         return visited
+
+    def add_friendship_linear(self, user_id, friend_id):
+        # return true on a success
+        if user_id == friend_id:
+            return False
+        elif (
+            friend_id in self.friendships[user_id]
+            or user_id in self.friendships[friend_id]
+        ):
+            return False
+        else:
+            self.friendships[user_id].add[friend_id]
+            self.friendships[friend_id].add[user_id]
+            return True
+
+    def populate_graph_linear(self, num_users, avg_friendships):
+        # Reset graph
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+
+        # Add users
+        for num in range(num_users):
+            self.add_user(f"user_{num}")
+
+        # create random friendships
+        target_friendships = num_users * avg_friendships
+        total_friendships = 0
+        collisions = 0
+
+        while total_friendships < target_friendships:
+            # add friendships
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+            if self.add_friendship_linear(user_id, friend_id):
+                total_friendships += 2
+            else:
+                collisions += 1
 
 
 if __name__ == "__main__":
