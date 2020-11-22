@@ -4,15 +4,15 @@ from world import World
 
 import random
 from ast import literal_eval
-from collections import deque
+from collections import deque, defaultdict
 
 # Load world
 world = World()
 
 
 # You may uncomment the smaller graphs for development and testing purposes.
-map_file = "maps/test_line.txt"
-# map_file = "maps/test_cross.txt"
+# map_file = "maps/test_line.txt"
+map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
 # map_file = "maps/main_maze.txt"
@@ -28,20 +28,49 @@ player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
+# ! do a bft so we try to get shortest path?
+
 traversal_path = []
 visited_rooms = set()
-visited_rooms.add(player.current_room)
+
+queue = deque()
+queue.append(player.current_room.id)
 # print(world.starting_room)
-while len(visited_rooms) < len(room_graph):
+
+# while len(visited_rooms) < len(room_graph):
+while len(queue) > 0:
+    curr = queue.popleft()
+    if curr not in visited_rooms:
+        visited_rooms.add(curr)
+
+        for neighbor in room_graph[curr][1].values():
+            queue.append(neighbor)
+
+
+print("visited_rooms")
+print(visited_rooms)
+"""
+count = 0
+while count in range(10):
+    count += 1
     room_exits = player.current_room.get_exits()
     for e in room_exits:
-        if (
-            player.current_room.get_room_in_direction(e) is not None
-            and player.current_room.get_room_in_direction(e) not in visited_rooms
-        ):
-            player.travel(e)
+
+        if player.current_room.get_room_in_direction(e) not in visited_rooms:
+            print("-------------------")
+            print(f"ATTEMPTING TO MOVE {e}")
+            player.travel(e, True)
             visited_rooms.add(player.current_room)
             traversal_path.append(e)
+            break
+        elif player.current_room.get_room_in_direction(e) in visited_rooms:
+            print("-------------------")
+            print("BACKTRACKING")
+            print(f"ATTEMPTING TO MOVE {e}")
+            player.travel(e, True)
+            break
+"""
+print("path")
 print(traversal_path)
 
 # TRAVERSAL TEST
